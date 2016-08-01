@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function multi_step_registration_menu() {
+
+  $items['user/%user/subscriptions'] = array(
+    'title' => 'Subscriptions',
+    'description' => 'System menu',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'multi_step_registration_subscriptions_page_callback',
+    'access callback' => 'user_is_logged_in',
+    'expanded' => TRUE,
+    'weight' => '10',
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback.
+ * user/%user/subscriptions
+ */
+function multi_step_registration_subscriptions_page_callback() {
+
+  return t('Successful!');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function multi_step_registration_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+  $form['field_user_get_news']['#access'] = FALSE;
+  $form['field_news_categories']['#access'] = FALSE;
+}
