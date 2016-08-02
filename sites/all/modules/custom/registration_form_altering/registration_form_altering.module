@@ -49,7 +49,7 @@ function registration_form_altering_register_alter_page_one(&$form, &$form_state
     $form['actions']['submit']['#access'] = FALSE;;
     $form['actions']['next'] = [
       '#type' => 'submit',
-      '#value' => 'Next >>',
+      '#value' => 'Next',
       '#submit' => ['registration_form_altering_register_next'],
     ];
   }
