@@ -1,0 +1,123 @@
+<?php
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ * @param $form
+ * @param $form_state
+ * @param $form_id
+ */
+function registration_form_altering_form_user_register_form_alter(&$form, &$form_state, $form_id) {
+
+  $form['field_news_categories']['#access'] = FALSE;
+  if (!empty($form_state['step']) && $form_state['step'] == 2) {
+    registration_form_altering_register_alter_page_two($form, $form_state);
+  }
+  else {
+    registration_form_altering_register_alter_page_one($form, $form_state);
+  }
+}
+
+/**
+ * Form alter - Step 1 of user registration.
+ * @param $form
+ * @param $form_state
+ */
+function registration_form_altering_register_alter_page_one(&$form, &$form_state) {
+  // Set the step.
+  $form_state['step'] = 1;
+  $form['step'] = array(
+    '#markup' => '' . t('Step 1 of 2: Account information') . '',
+    '#weight' => -99,
+  );
+
+  // Set default values (so they work with back button).
+  $form['account']['name']['#default_value'] = !empty($form_state['values']['name']) ? $form_state['values']['name'] : '';
+  $form['account']['mail']['#default_value'] = !empty($form_state['values']['mail']) ? $form_state['values']['mail'] : '';
+
+  // Next button.
+  $form['actions']['next'] = array(
+    '#type' => 'submit',
+    '#value' => 'Next',
+    '#submit' => ['registration_form_altering_register_next'],
+  );
+
+  if (!empty($form_state['values']['field_user_get_news']['und'][0]['value'])) {
+    $form['field_user_get_news']['#access'] = FALSE;
+    $form['actions']['next']['#access'] = FALSE;
+  }
+  else {
+    $form['actions']['submit']['#access'] = FALSE;;
+    $form['actions']['next'] = [
+      '#type' => 'submit',
+      '#value' => 'Next >>',
+      '#submit' => ['registration_form_altering_register_next'],
+    ];
+  }
+}
+
+/**
+ * Form alter - Step 2 of user registration.
+ * @param $form
+ * @param $form_state
+ */
+function registration_form_altering_register_alter_page_two(&$form, &$form_state) {
+
+  $form['step'] = array(
+    '#markup' => '' . t('Step 2 of 2: Select subscription categories') . '',
+    '#weight' => -10,
+  );
+
+  $form['account']['name']['#access'] = FALSE;
+  $form['account']['mail']['#access'] = FALSE;
+  $form['field_user_get_news']['#access'] = FALSE;
+  $form['field_news_categories']['#access'] = TRUE;
+  if ($form_state['values']['field_user_get_news']['und'][0]['value'] == 0) {
+    $form['field_news_categories']['#access'] = FALSE;
+  }
+  else {
+    $form['field_news_categories']['#access'] = TRUE;
+  };
+
+  $form['account']['name']['#default_value'] = !empty($form_state['values']['name']) ? $form_state['values']['name'] : '';
+  $form['account']['mail']['#default_value'] = !empty($form_state['values']['mail']) ? $form_state['values']['mail'] : '';
+  $form['actions']['back'] = [
+    '#type' => 'submit',
+    '#value' => t('Back'),
+    '#submit' => ['registration_form_altering_register_back'],
+    '#limit_validation_errors' => [],
+  ];
+  $form['actions']['submit']['#weight'] = 100;
+}
+
+/**
+ * Submit handler for next button.
+ * @param $form
+ * @param $form_state
+ */
+function registration_form_altering_register_next($form, &$form_state) {
+  // Save the page 1 values.
+  $form_state['page_values'][1] = $form_state['values'];
+
+  // Load the page 2 values.
+  if (!empty($form_state['page_values'][2])) {
+    $form_state['values'] = $form_state['page_values'][2];
+  }
+  // Set the step.
+  $form_state['step'] = 2;
+  // Rebuild the form.
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Submit handler for back button.
+ * @param $form
+ * @param $form_state
+ */
+function registration_form_altering_register_back($form, &$form_state) {
+  // Load the page 1 values.
+  $form_state['values'] = $form_state['page_values'][1];
+  // Set the step.
+  $form_state['step'] = 1;
+  // Rebuild the form.
+  $form_state['rebuild'] = TRUE;
+}

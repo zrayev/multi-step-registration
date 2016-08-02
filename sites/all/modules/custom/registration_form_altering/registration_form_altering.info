@@ -1,0 +1,4 @@
+name = Custom registration form altering
+description = My custom registration form altering
+core = 7.x
+package = Custom

@@ -1,0 +1,4 @@
+name = Custom profile form altering
+description = My custom profile form altering
+core = 7.x
+package = Custom
