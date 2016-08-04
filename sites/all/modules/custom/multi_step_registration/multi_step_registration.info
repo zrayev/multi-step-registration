@@ -1,4 +1,0 @@
-name = Multi step registration
-description = My multi step registration form
-core = 7.x
-package = Custom

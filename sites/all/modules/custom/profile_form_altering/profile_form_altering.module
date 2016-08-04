@@ -2,8 +2,18 @@
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ * @param $form
+ * @param $form_state
+ * @param $form_id
  */
 function profile_form_altering_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
-  $form['field_user_get_news']['#access'] = FALSE;
-  $form['field_news_categories']['#access'] = FALSE;
+  $flag = array_search('some_flag', $form_state['build_info']['args']);
+  if ($flag == FALSE) {
+    $form['field_user_get_news']['#access'] = FALSE;
+    $form['field_news_categories']['#access'] = FALSE;
+  }
+  else {
+    $form['account']['#access'] = FALSE;
+    $form['picture']['#access'] = FALSE;
+  }
 }

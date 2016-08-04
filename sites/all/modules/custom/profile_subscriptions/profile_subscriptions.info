@@ -1,0 +1,4 @@
+name = Profile subscriptions
+description = My profile subscriptions
+core = 7.x
+package = Custom
