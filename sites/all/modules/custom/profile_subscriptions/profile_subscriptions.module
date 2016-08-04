@@ -1,77 +1,21 @@
 <?php
 
 /**
- * Implements hook_theme().
- */
-function profile_subscriptions_theme($existing, $type, $theme, $path) {
-  $items = array();
-
-  $items['profile_subscriptions_form_element'] = array(
-    'render element' => 'form_element',
-    'template' => 'templates/profile-subscriptions-custom-form-element',
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_menu().
  */
 function profile_subscriptions_menu() {
-
-  $items['user/%user/subscriptions'] = array(
-    'title' => 'Subscriptions',
-    'description' => 'System menu',
+  $items['user/%user/subscriptions'] = [
+    'title' => t('Subscriptions'),
+    'description' => t('Subscriptions menu'),
     'type' => MENU_LOCAL_TASK,
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('profile_subscriptions_example_form'),
+    'page arguments' => array('user_profile_form', 1, 'account', 'some_flag'),
     'access callback' => 'user_is_logged_in',
     'expanded' => TRUE,
     'weight' => '10',
-  );
+    'file' => 'user.pages.inc',
+    'file path' => drupal_get_path('module', 'user'),
+  ];
 
   return $items;
-}
-
-/**
- * Page callback.
- * user/%user/subscriptions
- */
-function profile_subscriptions_page_callback() {
-
-  return t('Successful!');
-}
-
-/**
- * @param $form
- * @param $form_state
- * @return mixed
- */
-function profile_subscriptions_example_form($form, &$form_state) {
-  $form = array();
-
-  $form['subscriptions'] = array(
-    '#title' => t('Subscriptions'),
-    '#description' => t('You can add some information about yourself here:'),
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#tree' => TRUE,
-
-    '#theme' => 'profile_subscriptions_form_element',
-  );
-
-  $form['actions'] = array(
-    '#type' => 'actions',
-  );
-
-  $form['actions']['profile_subscriptions_submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Submit'),
-  );
-
-
-
-  return $form;
-
 }
